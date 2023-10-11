@@ -33,8 +33,12 @@ class CarlaVehicleControl(Node):
 
         # Clock subscription
         self.clock_sub = self.create_subscription(
-            Clock, '/clock', self._tick_, 10)
-        self._cached_clock_ = Clock()
+            Clock, '/clock', self.clock_cb, 10
+        )
+        self.clock = Clock()
+
+    def clock_cb(self, msg: Clock):
+        self.clock = msg
 
     def pass_to_carla(self, msg: VehicleControl):
 
@@ -44,7 +48,7 @@ class CarlaVehicleControl(Node):
 
         # Form our header, including current time
         command.header.frame_id = 'base_link'
-        command.header.stamp = self._cached_clock_.clock
+        command.header.stamp = self.clock.clock
         command.reverse = msg.reverse
         command.throttle = msg.throttle
         command.steer = msg.steer

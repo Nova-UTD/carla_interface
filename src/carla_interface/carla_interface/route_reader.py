@@ -15,7 +15,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 import time
 import xml.etree.ElementTree as ET
 
-from carla_msgs.msg import CarlaRoute, CarlaWorldInfo
+#from carla_msgs.msg import CarlaRoute, CarlaWorldInfo
 from geometry_msgs.msg import Pose, PoseStamped
 from nav_msgs.msg import Path
 from rosgraph_msgs.msg import Clock

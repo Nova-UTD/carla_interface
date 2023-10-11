@@ -11,6 +11,9 @@ echo "🌉 Sourcing CARLA-ROS Bridge..."
 export ROS_BRIDGE_ROOT="/carla-ros-bridge"
 source "${ROS_BRIDGE_ROOT}/install/setup.bash"
 
+echo "🤝 Sourcing CARLA Interface..."
+source /carla_interface/install/setup.bash
+
 echo "👍 Finished environment setup."
 
 echo ""
