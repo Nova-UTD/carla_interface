@@ -24,7 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'route_reader_node = carla_interface.route_reader:main',
-            'carla_actuation_node = carla_interface.carla_actuation:main',
+            'carla_vehicle_control_node = carla_interface.carla_vehicle_control:main',
             'carla_lidar_processing_node = carla_interface.carla_lidar_processing_node:main'
         ],
     },

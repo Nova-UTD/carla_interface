@@ -1,9 +1,9 @@
 '''
 Package:   carla_interface
-Filename:  carla_actuation.py
+Filename:  carla_vehicle_control.py
 Author:    Will Heitman (w at heit.mn)
 
-Very simple controller for the CARLA leaderboard.
+Applies the commands sent from Navigator in Carla.
 '''
 
 from carla_msgs.msg import CarlaEgoVehicleControl
@@ -12,9 +12,9 @@ import rclpy
 from rclpy.node import Node
 
 
-class CarlaActuation(Node):
+class CarlaVehicleControl(Node):
     def __init__(self):
-        super().__init__('carla_actuation')
+        super().__init__('carla_vehicle_control')
 
         # Command publisher
         self.command_pub = self.create_publisher(
@@ -23,14 +23,20 @@ class CarlaActuation(Node):
             10
         )
 
+        # Command subscription from Navigator
+        self.command_sub = self.create_subscription(
+            Odometry,
+            '/vehicle/control',
+            self.pass_to_carla,
+            10
+        )
+
         # Clock subscription
         self.clock_sub = self.create_subscription(
             Clock, '/clock', self._tick_, 10)
         self._cached_clock_ = Clock()
 
-        # self.control_timer = self.create_timer(0.05, self.generate_commands)
-
-    def generate_commands(self):
+    def pass_to_carla(self, VehicleControl command_in):
 
         # Form a blank command message
         # https://github.com/carla-simulator/ros-carla-msgs/blob/leaderboard-2.0/msg/CarlaEgoVehicleControl.msg
@@ -53,22 +59,18 @@ class CarlaActuation(Node):
         # Pubish our finished command
         self.command_pub.publish(command)
 
-    def _tick_(self, msg: Clock):
-        self._cached_clock_ = msg
-        self.generate_commands()
-
 
 def main(args=None):
     rclpy.init(args=args)
 
-    carla_actuation_node = CarlaActuation()
+    carla_vehicle_control_node = CarlaVehicleControl()
 
-    rclpy.spin(carla_actuation_node)
+    rclpy.spin(carla_vehicle_control_node)
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
-    carla_actuation_node.destroy_node()
+    carla_vehicle_control_node.destroy_node()
     rclpy.shutdown()
 
 

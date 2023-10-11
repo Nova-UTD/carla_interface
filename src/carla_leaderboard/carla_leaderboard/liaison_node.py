@@ -18,7 +18,7 @@ import time
 from carla_msgs.msg import CarlaRoute, CarlaWorldInfo, CarlaEgoVehicleStatus
 from geometry_msgs.msg import Pose, PoseStamped
 from nav_msgs.msg import Path
-from nova_msgs.msg import PedalPosition, SteeringPosition
+from navigator_msgs.msg import PedalPosition, SteeringPosition
 from rosgraph_msgs.msg import Clock
 from std_msgs.msg import Bool, ColorRGBA
 from visualization_msgs.msg import Marker, MarkerArray

@@ -40,11 +40,6 @@ def generate_launch_description():
             'objects_definition_file': '/carla_interface/data/carla_objects.json'}.items(),
     ) # spawn_point_ego_vehicle
 
-    carla_actuation = Node(
-        package='carla_interface',
-        executable='carla_actuation_node'
-    )
-
     carla_leaderboard_liaison = Node(
         package='carla_leaderboard',
         executable='liaison_node',
@@ -73,11 +68,16 @@ def generate_launch_description():
         arguments=[path.join("/carla_interface/data", "carla.urdf")]
     )
 
+    carla_vehicle_control = Node(
+        package='carla_interface',
+        executable='carla_vehicle_control_node'
+    )
+
     return LaunchDescription([
         carla_bridge_official,
         carla_spawner,
         carla_urdf_publisher,
         carla_lidar_processor,
-        carla_actuation,
+        carla_vehicle_control,
         carla_rviz,
     ])
