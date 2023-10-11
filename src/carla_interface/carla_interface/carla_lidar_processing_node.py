@@ -14,7 +14,7 @@ cloud before cutting out points near the car.
 '''
 
 import rclpy
-import ros2_numpy as rnp
+import ros_numpy as rnp
 import numpy as np
 from rclpy.node import Node
 import time
