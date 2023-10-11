@@ -45,5 +45,6 @@ RUN usermod -a -G tty root
 ENV ROS_VERSION 2
 
 COPY ./docker/entrypoint.sh /entrypoint.sh
+WORKDIR /carla_interface
 
 ENTRYPOINT [ "/entrypoint.sh" ]

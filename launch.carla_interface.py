@@ -28,7 +28,7 @@ def generate_launch_description():
             {'fixed_delta_seconds': 0.2}
         ],
         remappings=[
-            ('/carla/hero/lidar', '/lidar'),
+            #('/carla/hero/lidar', '/lidar'),
             ('/carla/hero/rgb_center/image', '/cameras/camera0')
         ]
     )
@@ -80,4 +80,5 @@ def generate_launch_description():
         carla_lidar_processor,
         carla_vehicle_control,
         carla_rviz,
+        route_reader,
     ])

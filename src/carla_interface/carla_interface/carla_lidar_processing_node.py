@@ -45,7 +45,7 @@ class CarlaLidarProcessingNode(Node):
             Clock, '/clock', self.clock_cb, 10
         )
         self.clean_lidar_pub = self.create_publisher(
-            PointCloud2, '/lidar/fused', 10
+            PointCloud2, '/lidar', 10
         )
 
         self.clean_semantic_lidar_pub = self.create_publisher(

@@ -11,14 +11,12 @@ echo "🌉 Sourcing CARLA-ROS Bridge..."
 export ROS_BRIDGE_ROOT="/carla-ros-bridge"
 source "${ROS_BRIDGE_ROOT}/install/setup.bash"
 
-alias launch_bridge="ros2 launch /launch/carla_bridge.launch.py"
-
 echo "👍 Finished environment setup."
 
 echo ""
 echo "====================================================================="
-echo "🚀 To launch the CARLA-ROS2 bridge use: 👀 launch_bridge 👀"
-echo " which is an alias for: ros2 launch /launch/carla_bridge.launch.py"
+echo "🚀 To launch the CARLA-ROS2 bridge use:"
+echo "          ros2 launch launch.carla_interface.py"
 echo "====================================================================="
 echo ""
 

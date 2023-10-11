@@ -1,13 +1,13 @@
 '''
 Package:   carla_interface
 Filename:  carla_vehicle_control.py
-Author:    Will Heitman (w at heit.mn)
 
 Applies the commands sent from Navigator in Carla.
 '''
 
 from carla_msgs.msg import CarlaEgoVehicleControl
 from rosgraph_msgs.msg import Clock
+from navigator_msgs.msg import VehicleControl
 import rclpy
 from rclpy.node import Node
 
@@ -25,7 +25,7 @@ class CarlaVehicleControl(Node):
 
         # Command subscription from Navigator
         self.command_sub = self.create_subscription(
-            Odometry,
+            VehicleControl,
             '/vehicle/control',
             self.pass_to_carla,
             10
@@ -36,7 +36,7 @@ class CarlaVehicleControl(Node):
             Clock, '/clock', self._tick_, 10)
         self._cached_clock_ = Clock()
 
-    def pass_to_carla(self, VehicleControl command_in):
+    def pass_to_carla(self, msg: VehicleControl):
 
         # Form a blank command message
         # https://github.com/carla-simulator/ros-carla-msgs/blob/leaderboard-2.0/msg/CarlaEgoVehicleControl.msg
@@ -45,17 +45,10 @@ class CarlaVehicleControl(Node):
         # Form our header, including current time
         command.header.frame_id = 'base_link'
         command.header.stamp = self._cached_clock_.clock
-
-        # If the current time in seconds is even, drive forward
-        # Else drive backward
-        if self._cached_clock_.clock.sec % 2 == 0:
-            command.reverse = False
-        else:
-            command.reverse = True
-        command.reverse = False
-        # Set the throttle to zero (don't move)
-        command.throttle = 1.0
-
+        command.reverse = msg.reverse
+        command.throttle = msg.throttle
+        command.steer = msg.steer
+        command.brake = msg.brake
         # Pubish our finished command
         self.command_pub.publish(command)
 
