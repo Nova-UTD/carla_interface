@@ -25,7 +25,8 @@ from navigator_msgs.msg import VehicleSpeed
 from tf2_ros import TransformBroadcaster
 from xml.etree import ElementTree as ET
 
-from scipy.spatial.transform import Rotation as R
+#from scipy.spatial.transform import Rotation as R
+from tf_transformations import quaternion_multiply, euler_from_quaternion
 
 
 def toRadians(degrees: float):
@@ -256,7 +257,8 @@ class GnssProcessingNode(Node):
         heading_y = q.y * 0.48
         wma_yaw = q
 
-        rpy = R.from_quat([q.x, q.y, q.z, q.w]).as_euler('xyz')
+        #rpy = R.from_quat([q.x, q.y, q.z, q.w]).as_euler('xyz')
+        rpy = euler_from_quaternion([q.x, q.y, q.z, q.w])
         wma_yaw = rpy[1] * -np.pi/2 + np.pi
 
         # q = cos(theta/2) + sin(theta/2)(xi + yj + zk)

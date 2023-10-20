@@ -28,6 +28,7 @@ RUN apt-get update && apt update && apt upgrade -y && \
         ros-foxy-rqt-gui-py \
         ros-foxy-python-qt-binding \
         ros-foxy-derived-object-msgs \
+        ros-foxy-tf-transformations \
         # needed for ros2_numpy package (maybe others)
         ros-foxy-ament-cmake-nose \
     # cleanup to make image smaller
