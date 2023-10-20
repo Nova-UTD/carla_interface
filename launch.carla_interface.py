@@ -45,6 +45,11 @@ def generate_launch_description():
         executable='liaison_node',
         parameters=[]
     )
+
+    carla_gnss_processor = Node(
+        package='carla_interface',
+        executable='carla_gnss_processing_node'
+    )
     
     carla_lidar_processor = Node(
         package='carla_interface',
@@ -59,13 +64,16 @@ def generate_launch_description():
     carla_rviz = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d' + '/carla_interface/data/carla.rviz']
+        arguments=['-d' + '/carla_interface/data/carla2.rviz']
     )
 
+    with open("/carla_interface/data/carla.urdf", 'r') as f:
+        robot_desc = f.read()
     carla_urdf_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        arguments=[path.join("/carla_interface/data", "carla.urdf")]
+        parameters=[{'robot_description': robot_desc, 
+                     'publish_frequency': 50.0}]
     )
 
     carla_vehicle_control = Node(
@@ -77,6 +85,7 @@ def generate_launch_description():
         carla_bridge_official,
         carla_spawner,
         carla_urdf_publisher,
+        carla_gnss_processor,
         carla_lidar_processor,
         carla_vehicle_control,
         carla_rviz,

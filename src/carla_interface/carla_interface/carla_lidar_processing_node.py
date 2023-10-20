@@ -14,7 +14,7 @@ cloud before cutting out points near the car.
 '''
 
 import rclpy
-import ros_numpy as rnp
+import ros2_numpy as rnp
 import numpy as np
 from rclpy.node import Node
 import time
@@ -27,8 +27,6 @@ from nav_msgs.msg import OccupancyGrid
 from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Float32
-
-import matplotlib.pyplot as plt
 
 
 class CarlaLidarProcessingNode(Node):

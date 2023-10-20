@@ -15,7 +15,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 import time
 import xml.etree.ElementTree as ET
 
-#from carla_msgs.msg import CarlaRoute, CarlaWorldInfo
+from carla_msgs.msg import CarlaWorldInfo
 from geometry_msgs.msg import Pose, PoseStamped
 from nav_msgs.msg import Path
 from rosgraph_msgs.msg import Clock
@@ -39,7 +39,20 @@ class RouteReaderNode(Node):
         self.route = None
         self.clock = Clock()
 
-        tree = ET.parse('/carla_interface/data/routes_town02.xml')
+        ## Need to republish the world info so that the map manager can grab it
+        self.world_info_sub = self.create_subscription(
+            CarlaWorldInfo, '/carla/world_info', self.world_info_cb, 10)
+        self.world_info_pub = self.create_publisher(
+            CarlaWorldInfo, '/carla/world_info', 10)
+
+        self.world_info_cached = None
+        self.world_info_repub_timer = self.create_timer(
+            5.0, self.repub_world_info)
+        ##
+
+        #tree = ET.parse('/carla_interface/data/routes_town02.xml')
+        tree = ET.parse('/carla_interface/data/routes_town02_turn.xml')
+        #tree = ET.parse('/carla_interface/data/routes_town02_straight.xml')
 
         TARGET_ROUTE_ID: str = "0"
 
@@ -71,6 +84,16 @@ class RouteReaderNode(Node):
 
     def publish_route(self):
         self.route_pub.publish(self.route)
+
+    def world_info_cb(self, msg: CarlaWorldInfo):
+        if msg.opendrive == "":
+            return
+        self.world_info_cached = msg
+
+    def repub_world_info(self):
+        if self.world_info_cached is None:
+            return
+        self.world_info_pub.publish(self.world_info_cached)
 
 
 def main(args=None):

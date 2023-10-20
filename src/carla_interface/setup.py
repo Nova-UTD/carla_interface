@@ -25,7 +25,8 @@ setup(
         'console_scripts': [
             'route_reader_node = carla_interface.route_reader:main',
             'carla_vehicle_control_node = carla_interface.carla_vehicle_control:main',
-            'carla_lidar_processing_node = carla_interface.carla_lidar_processing_node:main'
+            'carla_lidar_processing_node = carla_interface.carla_lidar_processing_node:main',
+            'carla_gnss_processing_node = carla_interface.carla_gnss_processing_node:main'
         ],
     },
 )
