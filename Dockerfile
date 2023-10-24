@@ -4,6 +4,8 @@ FROM ros:foxy
 # This variable tells future scripts that user input isn't available during the Docker build.
 ENV DEBIAN_FRONTEND noninteractive
 
+LABEL maintainer="Nova"
+
 # Steps followed from here: https://carla.readthedocs.io/projects/ros-bridge/en/latest/ros_installation_ros2/
 # Clone the carla-ros-bridge repo
 RUN mkdir -p /carla-ros-bridge
