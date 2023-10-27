@@ -42,6 +42,14 @@
                     "fov": 70.0
                 },
                 {
+                    "type": "sensor.camera.rgb",
+                    "id": "rgb_back",
+                    "spawn_point": {"x": -0.2, "y": -0.15, "z": 1.88, "roll": 0.0, "pitch": 0.0, "yaw": 180.0},
+                    "image_size_x": 800,
+                    "image_size_y": 600,
+                    "fov": 70.0
+                },
+                {
                     "type": "sensor.lidar.ray_cast",
                     "id": "lidar",
                     "spawn_point": {"x": 0.0, "y": 0.0, "z": 2.08, "roll": 0.0, "pitch": 0.0, "yaw": 0.0},

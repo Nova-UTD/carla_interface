@@ -29,7 +29,10 @@ def generate_launch_description():
         ],
         remappings=[
             #('/carla/hero/lidar', '/lidar'),
-            ('/carla/hero/rgb_center/image', '/cameras/camera0')
+            ('/carla/hero/rgb_center/image', '/cameras/camera0'),
+            ('/carla/hero/rgb_right/image', '/cameras/camera1'),
+            ('/carla/hero/rgb_back/image', '/cameras/camera2'),
+            ('/carla/hero/rgb_left/image', '/cameras/camera3')
         ]
     )
 
@@ -88,6 +91,6 @@ def generate_launch_description():
         carla_gnss_processor,
         carla_lidar_processor,
         carla_vehicle_control,
-        carla_rviz,
+        #carla_rviz,
         route_reader,
     ])

@@ -641,7 +641,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /planning/smooth_route
+        Value: /planning/route
       Value: false
     - Class: rviz_default_plugins/Camera
       Enabled: false
