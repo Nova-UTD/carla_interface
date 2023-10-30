@@ -19,7 +19,7 @@ def generate_launch_description():
         name='carla_ros_bridge',
         parameters=[
             {'host': 'localhost'},
-            {'port': 2000}, # + int(environ['ROS_DOMAIN_ID'])},
+            {'port': 2000 + int(environ['ROS_DOMAIN_ID'])},
             {'synchronous_mode': True},
             {'town': 'Town02'},
             {'register_all_sensors': False},
