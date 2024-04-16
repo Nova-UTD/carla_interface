@@ -93,7 +93,6 @@ class GnssProcessingNode(Node):
         self.previous_x_vals = np.zeros((self.history_size))
         self.previous_y_vals = np.zeros((self.history_size))
         self.previous_z_vals = np.zeros((self.history_size))
-        self.wma_pose = Pose()
 
     def _parse_header_(self, root: ET.Element) -> dict:
         header = root.find("header")
@@ -215,10 +214,15 @@ class GnssProcessingNode(Node):
 
         self.status_pub.publish(status)
 
-    def _update_odom_weighted_moving_average_(self, current_pos: Point):
-        # Calculate noisy yaw from the change in position
-        # old_pose = self.previous_poses[self.history_size-1]
+    def _update_odom_weighted_moving_average_(self, current_pos: Point) -> Pose:
+        """Calculate the weighted moving average of the pose odometry
 
+        Args:
+            current_pos (Point): current position
+
+        Returns:
+            Pose: the weighted moving average pose
+        """
         # Calculate the weighted moving average (WMA) for pose odometry
         # 1. Discard oldest reading and add newest to 'queue'
         self.previous_x_vals = np.roll(self.previous_x_vals, -1)
@@ -243,7 +247,7 @@ class GnssProcessingNode(Node):
 
         wma_pose.orientation = self.cached_imu.orientation
 
-        self.wma_pose = wma_pose
+        return wma_pose
 
     def raw_odom_cb(self, msg: Odometry):
 
@@ -256,9 +260,9 @@ class GnssProcessingNode(Node):
         odom_msg.header = msg.header
         odom_msg.child_frame_id = msg.child_frame_id
 
-        self._update_odom_weighted_moving_average_(current_pos)
+        wma_pose = self._update_odom_weighted_moving_average_(current_pos)
 
-        odom_msg.pose.pose = self.wma_pose
+        odom_msg.pose.pose = wma_pose
 
         odom_msg.pose.covariance[0] = 2.0  # This is the variance of x
         odom_msg.pose.covariance[7] = 2.0  # This is the variance of y
@@ -272,21 +276,19 @@ class GnssProcessingNode(Node):
         # Update our timestamp (used to check staleness)
         self.latest_timestamp = odom_msg.header.stamp
 
-        # self.get_logger().info("{}".format(str(self.previous_y_vals)))
-        # self.get_logger().info(f"CURRENT Y: {current_pos.y}")
-
         # Publish our map->base_link tf
-        t = TransformStamped()
-        t.header = msg.header
-        t.child_frame_id = "hero"
-        transl = Vector3()
-        transl.x = self.wma_pose.position.x
-        transl.y = self.wma_pose.position.y
-        transl.z = self.wma_pose.position.z
-        t.transform.translation = transl
-        t.transform.rotation = self.wma_pose.orientation
-
         # Uncomment to enable direct map->base_link tf
+
+        # t = TransformStamped()
+        # t.header = msg.header
+        # t.child_frame_id = "hero"
+        # transl = Vector3()
+        # transl.x = wma_pose.position.x
+        # transl.y = wma_pose.position.y
+        # transl.z = wma_pose.position.z
+        # t.transform.translation = transl
+        # t.transform.rotation = wma_pose.orientation
+
         # self.tf_broadcaster.sendTransform(t)
 
 
