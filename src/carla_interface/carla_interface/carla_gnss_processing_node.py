@@ -1,10 +1,10 @@
-'''
+"""
 Package: carla_interface
    File: gnss_processing_node.py
  Author: Will Heitman (w at heit dot mn)
 
 Very simple node to convert raw GNSS odometry into a map->base_link transform.
-'''
+"""
 
 import math
 import rclpy
@@ -25,7 +25,7 @@ from navigator_msgs.msg import VehicleSpeed
 from tf2_ros import TransformBroadcaster
 from xml.etree import ElementTree as ET
 
-#from scipy.spatial.transform import Rotation as R
+# from scipy.spatial.transform import Rotation as R
 from tf_transformations import quaternion_multiply, euler_from_quaternion
 
 
@@ -51,45 +51,34 @@ EARTH_RADIUS_EQUA = 6378137.0
 class GnssProcessingNode(Node):
 
     def __init__(self):
-        super().__init__('carla_gnss_processing_node')
+        super().__init__("carla_gnss_processing_node")
 
         self.odom_sub = self.create_subscription(
-            Odometry, '/gnss/odometry_raw', self.raw_odom_cb, 10
+            Odometry, "/gnss/odometry_raw", self.raw_odom_cb, 10
         )
         self.gnss_sub = self.create_subscription(
-            NavSatFix, '/carla/hero/gnss', self.gnssCb, 10
+            NavSatFix, "/carla/hero/gnss", self.gnssCb, 10
         )
 
-        self.clock_sub = self.create_subscription(
-            Clock, '/clock', self.clockCb, 10)
+        self.clock_sub = self.create_subscription(Clock, "/clock", self.clockCb, 10)
 
-        self.imu_sub = self.create_subscription(
-            Imu, '/carla/hero/imu', self.imuCb, 10
-        )
+        self.imu_sub = self.create_subscription(Imu, "/carla/hero/imu", self.imuCb, 10)
 
         self.speedometer_sub = self.create_subscription(
-            Float32, '/carla/hero/speedometer', self.speedometerCb, 10
+            Float32, "/carla/hero/speedometer", self.speedometerCb, 10
         )
 
         self.world_info_sub = self.create_subscription(
-            CarlaWorldInfo, '/carla/world_info', self.worldInfoCb, 10
+            CarlaWorldInfo, "/carla/world_info", self.worldInfoCb, 10
         )
 
-        self.odom_pub = self.create_publisher(
-            Odometry, '/gnss/odometry', 10
-        )
+        self.odom_pub = self.create_publisher(Odometry, "/gnss/odometry", 10)
 
-        self.raw_odom_pub = self.create_publisher(
-            Odometry, '/gnss/odometry_raw', 10
-        )
+        self.raw_odom_pub = self.create_publisher(Odometry, "/gnss/odometry_raw", 10)
 
-        self.speed_pub = self.create_publisher(
-            VehicleSpeed, '/speed', 10
-        )
+        self.speed_pub = self.create_publisher(VehicleSpeed, "/speed", 10)
 
-        self.status_pub = self.create_publisher(
-            DiagnosticStatus, '/node_statuses', 1
-        )
+        self.status_pub = self.create_publisher(DiagnosticStatus, "/node_statuses", 1)
 
         self.status_timer = self.create_timer(1.0, self.updateStatus)
 
@@ -111,17 +100,17 @@ class GnssProcessingNode(Node):
         self.wma_pose = Pose()
 
     def _parse_header_(self, root: ET.Element) -> dict:
-        header = root.find('header')
+        header = root.find("header")
 
         # Find our geoReference tag, which has contents like this:
         # "<![CDATA[+proj=tmerc +lat_0=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +geoidgrids=egm96_15.gtx +vunits=m +no_defs ]]>"
-        geo_reference: str = header.find('geoReference').text
-        geo_reference_parts = geo_reference.split('+')
+        geo_reference: str = header.find("geoReference").text
+        geo_reference_parts = geo_reference.split("+")
 
         for part in geo_reference_parts:
-            if part.startswith('lon_0'):
+            if part.startswith("lon_0"):
                 lon0 = float(part[6:])
-            elif part.startswith('lat_0'):
+            elif part.startswith("lat_0"):
                 lat0 = float(part[6:])
 
         return (lat0, lon0)
@@ -150,8 +139,11 @@ class GnssProcessingNode(Node):
             tuple: (x,y) in UTM meters
         """
         x = scale * toRadians(lon) * EARTH_RADIUS_EQUA
-        y = scale * EARTH_RADIUS_EQUA * \
-            math.log(math.tan((90.0+lat) * math.pi/360.0))
+        y = (
+            scale
+            * EARTH_RADIUS_EQUA
+            * math.log(math.tan((90.0 + lat) * math.pi / 360.0))
+        )
 
         return (x, y)
 
@@ -167,12 +159,12 @@ class GnssProcessingNode(Node):
         if self.lat0 is None:
             return
 
-        x0, y0 = self.latlonToMercator(
-            self.lat0, self.lon0, latToScale(self.lat0))
+        x0, y0 = self.latlonToMercator(self.lat0, self.lon0, latToScale(self.lat0))
 
         # TODO: Should scale here be from self.lat0?
         x, y = self.latlonToMercator(
-            msg.latitude, msg.longitude, latToScale(msg.latitude))
+            msg.latitude, msg.longitude, latToScale(msg.latitude)
+        )
 
         position_x = x - x0
         position_y = y - y0
@@ -184,8 +176,8 @@ class GnssProcessingNode(Node):
 
         # The odometry is the car's location on the map,
         # so the child frame is "base_link"
-        odom_msg.header.frame_id = 'map'
-        odom_msg.child_frame_id = 'base_link'
+        odom_msg.header.frame_id = "map"
+        odom_msg.child_frame_id = "base_link"
         pos = Point()
 
         pos.x = position_x
@@ -207,19 +199,22 @@ class GnssProcessingNode(Node):
 
         # Check if message is stale
         current_time = self.clock.clock.sec + self.clock.clock.nanosec * 1e-9
-        data_received_time = self.latest_timestamp.sec + \
-            self.latest_timestamp.nanosec * 1e-9
+        data_received_time = (
+            self.latest_timestamp.sec + self.latest_timestamp.nanosec * 1e-9
+        )
         time_since_data_received = current_time - data_received_time > 1.0
         if time_since_data_received > 1.0:
             status.level = DiagnosticStatus.STALE
-            status.message = f"No GNSS data received in {time_since_data_received} seconds"
+            status.message = (
+                f"No GNSS data received in {time_since_data_received} seconds"
+            )
         else:
             status.level = DiagnosticStatus.OK
             # No message necessary if OK.
 
         stamp = KeyValue()
-        stamp.key = 'stamp'
-        stamp.value = str(self.clock.clock.sec+self.clock.clock.nanosec*1e-9)
+        stamp.key = "stamp"
+        stamp.value = str(self.clock.clock.sec + self.clock.clock.nanosec * 1e-9)
         status.values.append(stamp)
 
         self.status_pub.publish(status)
@@ -234,9 +229,9 @@ class GnssProcessingNode(Node):
         self.previous_x_vals = np.roll(self.previous_x_vals, -1)
         self.previous_y_vals = np.roll(self.previous_y_vals, -1)
         self.previous_z_vals = np.roll(self.previous_z_vals, -1)
-        self.previous_x_vals[self.history_size-1] = current_pos.x
-        self.previous_y_vals[self.history_size-1] = current_pos.y
-        self.previous_z_vals[self.history_size-1] = current_pos.z
+        self.previous_x_vals[self.history_size - 1] = current_pos.x
+        self.previous_y_vals[self.history_size - 1] = current_pos.y
+        self.previous_z_vals[self.history_size - 1] = current_pos.z
 
         # 2. Generate weight array: [1,2,3,...,n]
         weights = np.arange(0, self.history_size)
@@ -257,16 +252,16 @@ class GnssProcessingNode(Node):
         heading_y = q.y * 0.48
         wma_yaw = q
 
-        #rpy = R.from_quat([q.x, q.y, q.z, q.w]).as_euler('xyz')
+        # rpy = R.from_quat([q.x, q.y, q.z, q.w]).as_euler('xyz')
         rpy = euler_from_quaternion([q.x, q.y, q.z, q.w])
-        wma_yaw = rpy[1] * -np.pi/2 + np.pi
+        wma_yaw = rpy[1] * -np.pi / 2 + np.pi
 
         # q = cos(theta/2) + sin(theta/2)(xi + yj + zk)
         # Set x, y = 0 s.t. theta = yaw
-        wma_pose.orientation.w = math.cos(wma_yaw/2)
+        wma_pose.orientation.w = math.cos(wma_yaw / 2)
         wma_pose.orientation.x = 0.0
         wma_pose.orientation.y = 0.0
-        wma_pose.orientation.z = math.sin(wma_yaw/2)
+        wma_pose.orientation.z = math.sin(wma_yaw / 2)
 
         self.wma_pose = wma_pose
 
@@ -319,7 +314,7 @@ class GnssProcessingNode(Node):
         # Publish our map->base_link tf
         t = TransformStamped()
         t.header = msg.header
-        t.child_frame_id = 'hero'
+        t.child_frame_id = "hero"
         transl = Vector3()
         transl.x = self.wma_pose.position.x
         transl.y = self.wma_pose.position.y
@@ -345,5 +340,5 @@ def main(args=None):
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
