@@ -223,9 +223,8 @@ class GnssProcessingNode(Node):
         # Calculate noisy yaw from the change in position
         # old_pose = self.previous_poses[self.history_size-1]
 
-        # Calculate the weighted moving average (WMA) for odometry
+        # Calculate the weighted moving average (WMA) for pose odometry
         # 1. Discard oldest reading and add newest to 'queue'
-
         self.previous_x_vals = np.roll(self.previous_x_vals, -1)
         self.previous_y_vals = np.roll(self.previous_y_vals, -1)
         self.previous_z_vals = np.roll(self.previous_z_vals, -1)
@@ -246,22 +245,7 @@ class GnssProcessingNode(Node):
         wma_pose.position.y = wma_y
         wma_pose.position.z = wma_z
 
-        # IMU orientation is buggy. See imu_cb note.
-        q = self.cached_imu.orientation
-        heading_x = q.x * -0.48
-        heading_y = q.y * 0.48
-        wma_yaw = q
-
-        # rpy = R.from_quat([q.x, q.y, q.z, q.w]).as_euler('xyz')
-        rpy = euler_from_quaternion([q.x, q.y, q.z, q.w])
-        wma_yaw = rpy[1] * -np.pi / 2 + np.pi
-
-        # q = cos(theta/2) + sin(theta/2)(xi + yj + zk)
-        # Set x, y = 0 s.t. theta = yaw
-        wma_pose.orientation.w = math.cos(wma_yaw / 2)
-        wma_pose.orientation.x = 0.0
-        wma_pose.orientation.y = 0.0
-        wma_pose.orientation.z = math.sin(wma_yaw / 2)
+        wma_pose.orientation = self.cached_imu.orientation
 
         self.wma_pose = wma_pose
 
