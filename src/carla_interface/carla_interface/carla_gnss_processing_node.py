@@ -8,7 +8,6 @@ Very simple node to convert raw GNSS odometry into a map->base_link transform.
 
 import math
 import rclpy
-import ros2_numpy as rnp
 import numpy as np
 from rclpy.node import Node
 from builtin_interfaces.msg import Time
@@ -16,7 +15,7 @@ from builtin_interfaces.msg import Time
 from std_msgs.msg import Float32
 from carla_msgs.msg import CarlaWorldInfo
 from diagnostic_msgs.msg import DiagnosticStatus, KeyValue
-from geometry_msgs.msg import Pose, Point, Quaternion, TransformStamped, Vector3
+from geometry_msgs.msg import Pose, Point, TransformStamped, Vector3
 from nav_msgs.msg import Odometry
 from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import Imu, NavSatFix
@@ -24,9 +23,6 @@ from navigator_msgs.msg import VehicleSpeed
 
 from tf2_ros import TransformBroadcaster
 from xml.etree import ElementTree as ET
-
-# from scipy.spatial.transform import Rotation as R
-from tf_transformations import quaternion_multiply, euler_from_quaternion
 
 
 def toRadians(degrees: float):
@@ -248,22 +244,6 @@ class GnssProcessingNode(Node):
         wma_pose.orientation = self.cached_imu.orientation
 
         self.wma_pose = wma_pose
-
-    def _quat_to_yaw_(self, q: Quaternion):
-        t0 = +2.0 * (q.w * q.x + q.y * q.z)
-        t1 = +1.0 - 2.0 * (q.x * q.x + q.y * q.y)
-        roll = math.atan2(t0, t1)
-
-        t2 = +2.0 * (q.w * q.y - q.z * q.x)
-        t2 = +1.0 if t2 > +1.0 else t2
-        t2 = -1.0 if t2 < -1.0 else t2
-        pitch = math.asin(t2)
-
-        t3 = +2.0 * (q.w * q.z + q.x * q.y)
-        t4 = +1.0 - 2.0 * (q.y * q.y + q.z * q.z)
-        yaw = math.atan2(t3, t4)
-
-        return yaw
 
     def raw_odom_cb(self, msg: Odometry):
 
