@@ -215,7 +215,7 @@ class GnssProcessingNode(Node):
         self.status_pub.publish(status)
 
     def _update_odom_weighted_moving_average_(self, current_pos: Point) -> Pose:
-        """Calculate the weighted moving average of the pose odometry
+        """Calculate the weighted moving average of the pose
 
         Args:
             current_pos (Point): current position
@@ -223,7 +223,7 @@ class GnssProcessingNode(Node):
         Returns:
             Pose: the weighted moving average pose
         """
-        # Calculate the weighted moving average (WMA) for pose odometry
+        # Calculate the weighted moving average (WMA) for position
         # 1. Discard oldest reading and add newest to 'queue'
         self.previous_x_vals = np.roll(self.previous_x_vals, -1)
         self.previous_y_vals = np.roll(self.previous_y_vals, -1)
