@@ -73,7 +73,7 @@ class LeaderboardLiaisonNode(Node):
             return
 
         self.client = carla.Client(
-            'localhost', 2000 + int(os.environ['ROS_DOMAIN_ID']))
+            'localhost', int(os.environ['CARLA_PORT']))
         self.client.set_timeout(60)
         self.world = self.client.get_world()
         blueprint_library = self.world.get_blueprint_library()

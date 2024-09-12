@@ -33,6 +33,7 @@ services:
         environment:
           - DISPLAY=${DISPLAY}
           - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+          - CARLA_PORT=${CARLA_PORT}
           - NVIDIA_VISIBLE_DEVICES=all
           # Specify the ROS Middleware to be consistent across containers:
           # see: https://discourse.ros.org/t/ros-cross-distribution-communication/27335
