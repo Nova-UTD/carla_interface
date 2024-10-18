@@ -3,8 +3,9 @@
 <package format="3">
   <name>carla_vehicle_spawner</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="root@todo.todo">root</maintainer>
+  <description>This package is used to spawn vehicles in CARLA through ROS2. It automatically generates vehicles at random spawn points until forcefully terminated 
+  by the user. The terminal output displays the vehicle ID number, model, and coordinate at which it is spawned for every instance. </description>
+  <maintainer email="project.nova@utdallas.edu">root</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
