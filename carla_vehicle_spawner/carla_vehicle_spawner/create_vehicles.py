@@ -2,12 +2,18 @@ import carla
 import random
 import time
 import rclpy
+import os
 from rclpy.node import Node
 
 class VehicleSpawner(Node):
     def __init__(self):
         super().__init__('vehicle_spawner')
-        self.client = carla.Client('localhost', 2000)
+
+        # Fetch ROS_DOMAIN_ID and assign the CARLA port dynamically
+        ros_domain_id = int(os.getenv('ROS_DOMAIN_ID', 0))
+        carla_port = 2000 + ros_domain_id
+        
+        self.client = carla.Client('localhost', carla_port)
         self.client.set_timeout(10.0)
         self.world = self.client.get_world()
         self.spawn_vehicles()
