@@ -14,8 +14,8 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='root',
-    maintainer_email='root@todo.todo',
-    description='TODO: Package description',
+    maintainer_email='project.nova@utdallas.edu',
+    description='This package randomly spawns vehicles in CARLA at different coordinates, displaying the model and vehicle ID number continuously until terminated by the user using ROS2.',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
