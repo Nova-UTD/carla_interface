@@ -6,7 +6,8 @@
       </weathers>
       <waypoints>
          <position x="20.3" y="-192.0" z="1.0"/>
-         <position x="41.6" y="-211.4" z="1.0"/>
+         <!-- <position x="41.6" y="-211.4" z="1.0"/> -->
+         <position x="41.6" y="-251.4" z="1.0"/>
       </waypoints>
       <scenarios>
          <!-- No scenarios yet -->

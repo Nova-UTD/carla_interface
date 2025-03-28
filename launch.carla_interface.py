@@ -28,11 +28,12 @@ def generate_launch_description():
             {'fixed_delta_seconds': 0.2}
         ],
         remappings=[
-            #('/carla/hero/lidar', '/lidar'),
-            ('/carla/hero/rgb_center/image', '/cameras/camera0'),
+            ('/carla/hero/rgb_front/image', '/cameras/camera0'),
             ('/carla/hero/rgb_right/image', '/cameras/camera1'),
             ('/carla/hero/rgb_back/image', '/cameras/camera2'),
-            ('/carla/hero/rgb_left/image', '/cameras/camera3')
+            ('/carla/hero/rgb_left/image', '/cameras/camera3'),
+            ('/carla/hero/rgb_front_depth/image', '/depth/camera0'),
+            ('/carla/hero/imu', '/imu')
         ]
     )
 
@@ -40,7 +41,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([get_package_share_directory(
             'carla_spawn_objects'), '/carla_spawn_objects.launch.py']),
         launch_arguments={
-            'objects_definition_file': '/carla_interface/data/carla_objects.json'}.items(),
+            'objects_definition_file': '/carla_interface/data/ego_config.json'}.items(),
     ) # spawn_point_ego_vehicle
 
     carla_leaderboard_liaison = Node(
@@ -53,6 +54,12 @@ def generate_launch_description():
         package='carla_interface',
         executable='carla_gnss_processing_node'
     )
+
+    carla_gnss_gt_processor = Node(
+        package='carla_interface',
+        executable='carla_gnss_processing_node',                                                                                                                                                                                                                                                                                                                                                    
+        parameters=[{'gnss_topic': 'gnss_gt'}]
+    )
     
     carla_lidar_processor = Node(
         package='carla_interface',
@@ -62,6 +69,11 @@ def generate_launch_description():
     route_reader = Node(
         package='carla_interface',
         executable='route_reader_node'
+    )
+
+    vehicle_spawner = Node(
+        package='carla_interface',
+        executable='vehicle_spawner'
     )
     
     carla_rviz = Node(
@@ -79,18 +91,33 @@ def generate_launch_description():
                      'publish_frequency': 50.0}]
     )
 
+    carla_manual_control = Node(
+        package='carla_manual_control',
+        executable='carla_manual_control',
+        parameters=[{'role_name':'hero'}]
+    )
+
     carla_vehicle_control = Node(
         package='carla_interface',
         executable='carla_vehicle_control_node'
     )
 
     return LaunchDescription([
-        carla_bridge_official,
-        carla_spawner,
-        carla_urdf_publisher,
-        carla_gnss_processor,
-        carla_lidar_processor,
-        carla_vehicle_control,
-        #carla_rviz,
-        route_reader,
+        ## Setup and Configuration of CARLA:
+        carla_bridge_official,      # the bridge itself, remaps topics
+        carla_spawner,              # spawns and configures the ego vehicle
+        carla_urdf_publisher,       # publishes the descriptor of our vehicle within ROS
+        route_reader,               # publishes /planning/rough_route
+        #vehicle_spawner,           # spawns other vehicles within carla
+
+        ## Sensor Processing Nodes:
+        carla_gnss_processor,       # publishes /gnss/odometry and /gnss/odometry_raw
+        carla_gnss_gt_processor,    # publishes /gnss_gt/odometry and /gnss_gt/odometry_raw
+        carla_lidar_processor,      # publishes /lidar
+
+        ## Control the Ego Vehicle:
+        carla_vehicle_control,      # subscribes to /vehicle/control and executes commands on ego vehicle
+        #carla_manual_control,      # use keyboard to drive the ego vehicle manually 
+        
+        #carla_rviz,                # ROS visualization, only used if not running anything else
     ])

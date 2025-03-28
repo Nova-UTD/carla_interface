@@ -50,9 +50,6 @@ class CarlaLidarProcessingNode(Node):
             PointCloud2, '/lidar_semantic_filtered', 10
         )
 
-        self.occupancy_grid_pub = self.create_publisher(
-            OccupancyGrid, '/cost/occupancy', 10)
-
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 

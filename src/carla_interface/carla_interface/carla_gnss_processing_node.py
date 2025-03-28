@@ -49,11 +49,15 @@ class GnssProcessingNode(Node):
     def __init__(self):
         super().__init__("carla_gnss_processing_node")
 
+        self.declare_parameter('gnss_topic', 'gnss')
+        gnss_topic_param = self.get_parameter('gnss_topic')
+        gnss_topic = gnss_topic_param.value
+
         self.odom_sub = self.create_subscription(
-            Odometry, "/gnss/odometry_raw", self.raw_odom_cb, 10
+            Odometry, "/%s/odometry_raw" % gnss_topic, self.raw_odom_cb, 10
         )
         self.gnss_sub = self.create_subscription(
-            NavSatFix, "/carla/hero/gnss", self.gnssCb, 10
+            NavSatFix, "/carla/hero/%s" % gnss_topic, self.gnssCb, 10
         )
 
         self.clock_sub = self.create_subscription(Clock, "/clock", self.clockCb, 10)
@@ -68,9 +72,9 @@ class GnssProcessingNode(Node):
             CarlaWorldInfo, "/carla/world_info", self.worldInfoCb, 10
         )
 
-        self.odom_pub = self.create_publisher(Odometry, "/gnss/odometry", 10)
+        self.odom_pub = self.create_publisher(Odometry, "/%s/odometry" % gnss_topic, 10)
 
-        self.raw_odom_pub = self.create_publisher(Odometry, "/gnss/odometry_raw", 10)
+        self.raw_odom_pub = self.create_publisher(Odometry, "/%s/odometry_raw" % gnss_topic, 10)
 
         self.speed_pub = self.create_publisher(VehicleSpeed, "/speed", 10)
 
