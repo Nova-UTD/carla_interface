@@ -9,7 +9,7 @@
         {
             "type": "vehicle.tesla.model3",
             "id": "hero",
-            "spawn_point": {"x": 21.7, "y": -191.9, "z": 1.0, "roll": 0.0, "pitch": 0.0, "yaw": 0.0},
+            "spawn_point": {"x": 24.4, "y": -306.5, "z": 1.0, "roll": 0.0, "pitch": 0.0, "yaw": 0.0},
             "autopilot": false,
             "sensors": 
             [
@@ -73,8 +73,8 @@
                     "range": 85,
                     "channels": 128,
                     "points_per_second": 600000,
-                    "upper_fov": 10.0,
-                    "lower_fov": -45.0,
+                    "upper_fov": 15.0,
+                    "lower_fov": -75.0,
                     "rotation_frequency": 10,
                     "noise_stddev": 0.0,
                     "atmosphere_attenuation_rate": 0.004,

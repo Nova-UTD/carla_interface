@@ -108,7 +108,7 @@ def generate_launch_description():
         carla_spawner,              # spawns and configures the ego vehicle
         carla_urdf_publisher,       # publishes the descriptor of our vehicle within ROS
         route_reader,               # publishes /planning/rough_route
-        #vehicle_spawner,           # spawns other vehicles within carla
+        vehicle_spawner,           # spawns other vehicles within carla
 
         ## Sensor Processing Nodes:
         carla_gnss_processor,       # publishes /gnss/odometry and /gnss/odometry_raw
@@ -117,7 +117,7 @@ def generate_launch_description():
 
         ## Control the Ego Vehicle:
         carla_vehicle_control,      # subscribes to /vehicle/control and executes commands on ego vehicle
-        #carla_manual_control,      # use keyboard to drive the ego vehicle manually 
+        # carla_manual_control,      # use keyboard to drive the ego vehicle manually 
         
-        #carla_rviz,                # ROS visualization, only used if not running anything else
+        # carla_rviz,                # ROS visualization, only used if not running anything else
     ])

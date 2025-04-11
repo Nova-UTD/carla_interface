@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /TF1/Frames1
-        - /Grids1
+        - /Cameras1
         - /Pose1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 440
@@ -112,7 +112,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
@@ -335,7 +334,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /carla/hero/rgb_left/image
+            Value: /cameras/camera3
           Value: true
         - Class: rviz_default_plugins/Image
           Enabled: true
@@ -363,7 +362,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /carla/hero/rgb_right/image
+            Value: /cameras/camera1
           Value: true
         - Class: rviz_default_plugins/Image
           Enabled: false
@@ -620,24 +619,11 @@ Visualization Manager:
       Value: false
       Visibility:
         Cameras:
-          Bird's Eye: true
-          RGB Center: true
-          RGB Left: true
-          RGB Right: true
-          Semantic Left: true
-          Semantic Right: true
+          "": true
           Value: true
         Grid: true
         Grids:
-          Current Occupancy: true
-          Drivable Area: true
-          Junction Occupancy: true
-          Junctions: true
-          Predicted Occupancy: true
-          Route Distance: true
-          Speed Cost: true
-          Stateful Junction: true
-          Steering Cost: true
+          "": true
           Value: true
         LiDAR:
           "": true
@@ -715,8 +701,7 @@ Visualization Manager:
       Enabled: true
       Name: Marker
       Namespaces:
-        barrier: true
-        lookahead: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Volatile
