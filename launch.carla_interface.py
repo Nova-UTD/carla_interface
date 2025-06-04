@@ -25,7 +25,7 @@ def generate_launch_description():
             {'register_all_sensors': False},
             {'ego_vehicle_role_name': 'hero'},
             {'timeout': 30.0},
-            {'fixed_delta_seconds': 0.2}
+            {'fixed_delta_seconds': 0.25}
         ],
         remappings=[
             ('/carla/hero/rgb_front/image', '/cameras/camera0'),
