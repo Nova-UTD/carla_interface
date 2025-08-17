@@ -42,6 +42,8 @@ RUN rosdep update && rosdep install --from-paths src --ignore-src -r
 # Build the CARLA ROS2 bridge
 RUN /bin/bash -c "source /opt/ros/foxy/setup.bash && colcon build"
 
+RUN pip3 install pygame
+
 # RUN useradd -ms /bin/bash docker
 RUN usermod -a -G dialout root
 RUN usermod -a -G tty root
